@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Dashboard</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet"
+	      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	    
+
+
+    <style>
+		.action-btn {
+		            margin-right: 8px;  
+		            margin-bottom: 5px;
+		        }
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial;
+    }
+
+    body{
+        background:#f1f1f1;
+    }
+
+    /* SIDEBAR */
+    .sidebar{
+        width:250px;
+        height:100vh;
+        background:#0f172a;
+        position:fixed;
+        top:0;
+        left:0;
+        padding-top:30px;
+    }
+
+    .sidebar h2{
+        color:white;
+        text-align:center;
+        margin-bottom:30px;
+    }
+
+    .sidebar a{
+        display:block;
+        color:white;
+        text-decoration:none;
+        padding:15px;
+    }
+
+    .sidebar a:hover{
+        background:#1e293b;
+    }
+
+    /* MAIN CONTENT */
+    .main{
+        margin-left:250px;
+        padding:20px;
+    }
+
+    /* SEARCH */
+    .search-box{
+        margin-top:20px;
+        margin-bottom:20px;
+    }
+
+    .search-box input{
+        padding:10px;
+        width:300px;
+        border:none;
+        border-radius:5px;
+    }
+
+    .search-box button{
+        padding:10px 20px;
+        background:#2563eb;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+    }
+
+    .search-box button:hover{
+        background:#1d4ed8;
+    }
+
+    /* CARDS */
+    .cards{
+        display:flex;
+        gap:20px;
+        margin-top:20px;
+    }
+
+    .card{
+        flex:1;
+        padding:20px;
+        border-radius:10px;
+        color:white;
+    }
+
+    .blue{
+        background:#2563eb;
+    }
+
+    .green{
+        background:#16a34a;
+    }
+
+    .red{
+        background:#dc2626;
+    }
+
+    /* TABLE */
+    table{
+        width:100%;
+        margin-top:30px;
+        border-collapse:collapse;
+        background:white;
+    }
+
+    th,td{
+        padding:12px;
+        border:1px solid #ddd;
+        text-align:center;
+    }
+
+    th{
+        background:#111827;
+        color:white;
+    }
+
+    /* BUTTONS */
+    .btn{
+        padding:6px 12px;
+        text-decoration:none;
+        color:white;
+        border-radius:5px;
+        margin-right:5px;
+    }
+
+    .issue{
+        background:#f59e0b;
+    }
+
+    .return{
+        background:#22c55e;
+    }
+
+    .edit{
+        background:#3b82f6;
+    }
+
+    .delete{
+        background:#ef4444;
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <h2>📚 Library</h2>
+
+    <a href="/dashboard">Dashboard</a>
+    <a href="/addBook">Add Book</a>
+    <a href="/logout">Logout</a>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <h1>Dashboard</h1>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+        <form action="/search" method="get">
+
+            <input type="text"
+                   name="keyword"
+                   placeholder="Search Book">
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <div class="card blue">
+            <h3>Total Books</h3>
+            <p th:text="${total}">0</p>
+        </div>
+
+        <div class="card green">
+            <h3>Issued</h3>
+            <p th:text="${issued}">0</p>
+        </div>
+
+        <div class="card red">
+            <h3>Available</h3>
+            <p th:text="${available}">0</p>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+        <tr th:each="book : ${books}">
+
+            <td th:text="${book.id}"></td>
+
+            <td th:text="${book.title}"></td>
+
+            <td th:text="${book.author}"></td>
+
+            <td th:text="${book.category}"></td>
+
+            <td th:text="${book.issued ? 'Issued' : 'Available'}"></td>
+
+			<td>
+
+			    <!-- ISSUE -->
+			    <a th:href="@{'/issueBook/' + ${book.id}}"
+			       class="btn btn-sm btn-success action-btn">
+			        Issue
+			    </a>
+
+			    <!-- RETURN -->
+			    <a th:href="@{'/returnBook/' + ${book.id}}"
+			       class="btn btn-sm btn-warning action-btn">
+			        Return
+			    </a>
+
+			    <!-- EDIT ICON -->
+			    <a th:href="@{'/editBook/' + ${book.id}}"
+			       class="btn btn-sm btn-primary action-btn">
+			        <i class="fa-solid fa-pen-to-square"></i>
+			    </a>
+
+			    <!-- DELETE ICON -->
+			    <a th:href="@{'/deleteBook/' + ${book.id}}"
+			       class="btn btn-sm btn-danger action-btn"
+			       onclick="return confirm('Delete this book?')">
+			        <i class="fa-solid fa-trash"></i>
+			    </a>
+
+			</td>
+        </tr>
+
+    </table>
+
+</div>
+
+</body>
+</html>
